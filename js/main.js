@@ -2,16 +2,6 @@
 
 const PICTURES_QUANTITY = 25;
 
-const Likes = {
-  min: 15,
-  max: 200
-};
-
-const AvatarsNumber = {
-  min: 1,
-  max: 6
-};
-
 const MESSAGES = [
   `Всё отлично!`,
   `В целом всё неплохо. Но не всё.`,
@@ -40,6 +30,17 @@ const DESCRIPTIONS = [
   `Я на горе`,
   `Фото сделано на iPhone`,
 ];
+
+const Likes = {
+  min: 15,
+  max: 200
+};
+
+const AvatarsNumber = {
+  min: 1,
+  max: 6
+};
+
 const pictures = [];
 const picturesNode = document.querySelector(`.pictures`);
 const pictureTemplate = document.querySelector(`#picture`)
