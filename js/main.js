@@ -1,6 +1,9 @@
 'use strict';
 
 const PICTURES_QUANTITY = 25;
+const SCALE_STEP = 25;
+const SCALE_MIN = 25;
+const SCALE_MAX = 100;
 
 const MESSAGES = [
   `Всё отлично!`,
@@ -185,12 +188,12 @@ const scaleNode = uploadOverlayNode.querySelector(`.scale`);
 const scaleInput = scaleNode.querySelector(`.scale__control--value`);
 const scalePlusButton = scaleNode.querySelector(`.scale__control--bigger`);
 const scaleMinusButton = scaleNode.querySelector(`.scale__control--smaller`);
-const imgUploadPreviewNode = uploadOverlayNode.querySelector(`.img-upload__preview img`)
+const imgUploadPreviewNode = uploadOverlayNode.querySelector(`.img-upload__preview img`);
 
 function biggerScale() {
   let scaleValue = parseInt(scaleInput.value, 10);
-  if (scaleValue < 100) {
-    scaleValue = scaleValue + 25;
+  if (scaleValue < SCALE_MAX) {
+    scaleValue = scaleValue + SCALE_STEP;
     scaleInput.value = scaleValue + `%`;
     imgUploadPreviewNode.style.transform = `scale(` + scaleValue / 100 + `)`;
   }
@@ -198,8 +201,8 @@ function biggerScale() {
 
 function lessScale() {
   let scaleValue = parseInt(scaleInput.value, 10);
-  if (scaleValue > 25) {
-    scaleValue = scaleValue - 25;
+  if (scaleValue > SCALE_MIN) {
+    scaleValue = scaleValue - SCALE_STEP;
     scaleInput.value = scaleValue + `%`;
     imgUploadPreviewNode.style.transform = `scale(` + scaleValue / 100 + `)`;
   }
@@ -207,3 +210,24 @@ function lessScale() {
 
 scaleMinusButton.addEventListener(`click`, lessScale);
 scalePlusButton.addEventListener(`click`, biggerScale);
+
+// наложение эффектов
+const effectsListNode = uploadOverlayNode.querySelector(`.effects__list`);
+const effectLevelNode = uploadOverlayNode.querySelector(`.effect-level`);
+
+function setEffect(evt) {
+  if (evt.target && evt.target.matches(`input[type="radio"]`)) {
+    hideNode(effectLevelNode);
+    imgUploadPreviewNode.setAttribute(`class`, ``);
+    imgUploadPreviewNode.classList.add(`effects__preview--` + evt.target.value);
+
+    if (evt.target.value === `none`) {
+      hideNode(effectLevelNode);
+      return;
+    }
+    showNode(effectLevelNode);
+  }
+}
+
+effectsListNode.addEventListener(`click`, setEffect);
+
