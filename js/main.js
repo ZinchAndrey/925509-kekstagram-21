@@ -42,6 +42,7 @@ const AvatarsNumber = {
 };
 
 const pictures = [];
+const bodyNode = document.querySelector(`body`);
 const picturesNode = document.querySelector(`.pictures`);
 const pictureTemplate = document.querySelector(`#picture`)
   .content
@@ -50,7 +51,6 @@ const bigPictureNode = document.querySelector(`.big-picture`);
 
 const fragment = document.createDocumentFragment();
 
-
 // случайное число в пределах (min; max)
 function getRandom(min, max) {
   return Math.floor(min + Math.random() * (max - min));
@@ -58,6 +58,22 @@ function getRandom(min, max) {
 
 function getRandomArrayItem(array) {
   return array[getRandom(0, array.length)];
+}
+
+function hideNode(node) {
+  node.classList.add(`hidden`);
+}
+
+function showNode(node) {
+  node.classList.remove(`hidden`);
+}
+
+function modalOpen() {
+  bodyNode.classList.add(`modal-open`);
+}
+
+function modalClose() {
+  bodyNode.classList.remove(`modal-open`);
 }
 
 function renderPicturesData(quantity) {
@@ -118,10 +134,6 @@ function renderBigPicture(picture) {
   commentsListNode.appendChild(comment);
 }
 
-function hideNode(node) {
-  node.classList.add(`hidden`);
-}
-
 renderPicturesData(PICTURES_QUANTITY);
 
 pictures.forEach((item) => {
@@ -130,11 +142,43 @@ pictures.forEach((item) => {
 
 picturesNode.appendChild(fragment);
 
-bigPictureNode.classList.remove(`hidden`);
-
+// блок кода, касающийся рендеринга big picture, пока закомментировал, чтобы не мешал
+// bigPictureNode.classList.remove(`hidden`);
 renderBigPicture(pictures[0]);
+// modalOpen();
 
 hideNode(document.querySelector(`.social__comment-count`));
 hideNode(document.querySelector(`.comments-loader`));
-document.querySelector(`body`).classList.add(`modal-open`);
+
+// module4-task1 - редактирование изображения при загрузке
+const uploadInput = picturesNode.querySelector(`#upload-file`);
+const uploadOverlayNode = picturesNode.querySelector(`.img-upload__overlay`);
+const uploadCloseButton = uploadOverlayNode.querySelector(`#upload-cancel`);
+
+function openUpload() {
+  showNode(uploadOverlayNode);
+  modalOpen();
+  uploadCloseButton.addEventListener(`click`, closeUpload);
+  document.addEventListener(`keydown`, onUploadEscPress);
+
+}
+
+function closeUpload() {
+  hideNode(uploadOverlayNode);
+  modalClose();
+  uploadCloseButton.removeEventListener(`click`, closeUpload);
+  document.removeEventListener(`keydown`, onUploadEscPress);
+}
+
+function onUploadEscPress(evt) {
+  // в if добавить проверку, что мы не в полях input находимся
+  if (evt.key === `Escape`) {
+    closeUpload();
+  }
+}
+
+uploadInput.addEventListener(`change`, openUpload);
+// временно для удобства
+openUpload();
+
 
