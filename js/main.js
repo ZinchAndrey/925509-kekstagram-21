@@ -181,4 +181,29 @@ uploadInput.addEventListener(`change`, openUpload);
 // временно для удобства
 openUpload();
 
+const scaleNode = uploadOverlayNode.querySelector(`.scale`);
+const scaleInput = scaleNode.querySelector(`.scale__control--value`);
+const scalePlusButton = scaleNode.querySelector(`.scale__control--bigger`);
+const scaleMinusButton = scaleNode.querySelector(`.scale__control--smaller`);
+const imgUploadPreviewNode = uploadOverlayNode.querySelector(`.img-upload__preview img`)
 
+function biggerScale() {
+  let scaleValue = parseInt(scaleInput.value, 10);
+  if (scaleValue < 100) {
+    scaleValue = scaleValue + 25;
+    scaleInput.value = scaleValue + `%`;
+    imgUploadPreviewNode.style.transform = `scale(` + scaleValue / 100 + `)`;
+  }
+}
+
+function lessScale() {
+  let scaleValue = parseInt(scaleInput.value, 10);
+  if (scaleValue > 25) {
+    scaleValue = scaleValue - 25;
+    scaleInput.value = scaleValue + `%`;
+    imgUploadPreviewNode.style.transform = `scale(` + scaleValue / 100 + `)`;
+  }
+}
+
+scaleMinusButton.addEventListener(`click`, lessScale);
+scalePlusButton.addEventListener(`click`, biggerScale);
