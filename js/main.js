@@ -44,6 +44,45 @@ const AvatarsNumber = {
   max: 6
 };
 
+const Effect = {
+  none: {
+    STYLE_NAME: `none`,
+    MIN: ``,
+    MAX: ``,
+    UNIT: ``
+  },
+  chrome: {
+    STYLE_NAME: `grayscale`,
+    MIN: 0,
+    MAX: 1,
+    UNIT: ``
+  },
+  sepia: {
+    STYLE_NAME: `sepia`,
+    MIN: 0,
+    MAX: 1,
+    UNIT: ``
+  },
+  marvin: {
+    STYLE_NAME: `invert`,
+    MIN: 0,
+    MAX: 100,
+    UNIT: `%`
+  },
+  phobos: {
+    STYLE_NAME: `blur`,
+    MIN: 0,
+    MAX: 3,
+    UNIT: `px`
+  },
+  heat: {
+    STYLE_NAME: `brightness`,
+    MIN: 1,
+    MAX: 3,
+    UNIT: ``
+  },
+};
+
 const pictures = [];
 const bodyNode = document.querySelector(`body`);
 const picturesNode = document.querySelector(`.pictures`);
@@ -164,6 +203,8 @@ function openUpload() {
   uploadCloseButton.addEventListener(`click`, closeUpload);
   document.addEventListener(`keydown`, onUploadEscPress);
 
+  effectsListNode.addEventListener(`click`, setEffect);
+  effectLevelPin.addEventListener(`mouseup`, setEffectValue);
 }
 
 function closeUpload() {
@@ -171,6 +212,9 @@ function closeUpload() {
   modalClose();
   uploadCloseButton.removeEventListener(`click`, closeUpload);
   document.removeEventListener(`keydown`, onUploadEscPress);
+
+  effectsListNode.removeEventListener(`click`, setEffect);
+  effectLevelPin.removeEventListener(`mouseup`, setEffectValue);
 }
 
 function onUploadEscPress(evt) {
@@ -214,20 +258,31 @@ scalePlusButton.addEventListener(`click`, biggerScale);
 // наложение эффектов
 const effectsListNode = uploadOverlayNode.querySelector(`.effects__list`);
 const effectLevelNode = uploadOverlayNode.querySelector(`.effect-level`);
+const effectLevelValue = effectLevelNode.querySelector(`.effect-level__value`);
+const effectLevelPin = effectLevelNode.querySelector(`.effect-level__pin`);
+let activeEffect;
 
 function setEffect(evt) {
   if (evt.target && evt.target.matches(`input[type="radio"]`)) {
-    hideNode(effectLevelNode);
     imgUploadPreviewNode.setAttribute(`class`, ``);
-    imgUploadPreviewNode.classList.add(`effects__preview--` + evt.target.value);
+    activeEffect = Effect[evt.target.value];
 
     if (evt.target.value === `none`) {
       hideNode(effectLevelNode);
+      imgUploadPreviewNode.style.filter = `none`;
       return;
     }
+    imgUploadPreviewNode.classList.add(`effects__preview--` + evt.target.value);
+    imgUploadPreviewNode.style.filter =
+      Effect[evt.target.value].STYLE_NAME + `(` + Effect[evt.target.value].MIN + Effect[evt.target.value].UNIT + `)`;
+
     showNode(effectLevelNode);
   }
 }
 
-effectsListNode.addEventListener(`click`, setEffect);
+function setEffectValue() {
+  imgUploadPreviewNode.style.filter =
+    activeEffect.STYLE_NAME + `(` + activeEffect.MAX * effectLevelValue.value / 100 + activeEffect.UNIT + `)`;
+}
+
 
