@@ -285,4 +285,6 @@ function setEffectValue() {
     activeEffect.STYLE_NAME + `(` + activeEffect.MAX * effectLevelValue.value / 100 + activeEffect.UNIT + `)`;
 }
 
+// хэштеги тут еще можно посмотреть https://issue.life/questions/42065872
+/* /(^|\B)#(?![0-9_]+\b)([a-zA-Z0-9_]{1,30})(\b|\r)/g */
 
