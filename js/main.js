@@ -5,6 +5,12 @@ const SCALE_STEP = 25;
 const SCALE_MIN = 25;
 const SCALE_MAX = 100;
 
+const MAX_HASHTAGS = 5;
+const MAX_HASHTAG_LENGTH = 20;
+const REG = /#[a-zA-Zа-яА-ЯёЁ0-9]{1,19}/i;
+// pattern="/(^|\B)#(?![0-9_]+\b)([a-zA-Z0-9_]{1,20})(\b|\r)/g"
+// хэштеги тут еще можно посмотреть https://issue.life/questions/42065872
+
 const MESSAGES = [
   `Всё отлично!`,
   `В целом всё неплохо. Но не всё.`,
@@ -83,6 +89,13 @@ const Effect = {
   },
 };
 
+const ValidationMessage = {
+  maxItems: `не более 5 хэштегов`,
+  repeatItems: `хэштеги не должны повторяться`,
+  forbiddeSymbols: `введены недопустимые символы`,
+  maxLength: `длина хэштега должна быть не более 20 символов`,
+};
+
 const pictures = [];
 const bodyNode = document.querySelector(`body`);
 const picturesNode = document.querySelector(`.pictures`);
@@ -90,6 +103,27 @@ const pictureTemplate = document.querySelector(`#picture`)
   .content
   .querySelector(`.picture`);
 const bigPictureNode = document.querySelector(`.big-picture`);
+
+const uploadInput = picturesNode.querySelector(`#upload-file`);
+const uploadNode = picturesNode.querySelector(`.img-upload`);
+const uploadOverlayNode = uploadNode.querySelector(`.img-upload__overlay`);
+const uploadCloseButton = uploadOverlayNode.querySelector(`#upload-cancel`);
+
+const scaleNode = uploadOverlayNode.querySelector(`.scale`);
+const scaleInput = scaleNode.querySelector(`.scale__control--value`);
+const scalePlusButton = scaleNode.querySelector(`.scale__control--bigger`);
+const scaleMinusButton = scaleNode.querySelector(`.scale__control--smaller`);
+const imgUploadPreviewNode = uploadOverlayNode.querySelector(`.img-upload__preview img`);
+
+const effectsListNode = uploadOverlayNode.querySelector(`.effects__list`);
+const effectLevelNode = uploadOverlayNode.querySelector(`.effect-level`);
+const effectLevelValue = effectLevelNode.querySelector(`.effect-level__value`);
+const effectLevelPin = effectLevelNode.querySelector(`.effect-level__pin`);
+let activeEffect;
+
+const hashtagInput = uploadOverlayNode.querySelector(`.text__hashtags`);
+const commentInput = uploadOverlayNode.querySelector(`.text__description`);
+// const uploadFormNode = uploadNode.querySelector(`.upload-select-image`);
 
 const fragment = document.createDocumentFragment();
 
@@ -192,11 +226,7 @@ renderBigPicture(pictures[0]);
 hideNode(document.querySelector(`.social__comment-count`));
 hideNode(document.querySelector(`.comments-loader`));
 
-// module4-task1 - редактирование изображения при загрузке
-const uploadInput = picturesNode.querySelector(`#upload-file`);
-const uploadOverlayNode = picturesNode.querySelector(`.img-upload__overlay`);
-const uploadCloseButton = uploadOverlayNode.querySelector(`#upload-cancel`);
-
+// редактирование изображения при загрузке
 function openUpload() {
   showNode(uploadOverlayNode);
   modalOpen();
@@ -210,6 +240,7 @@ function openUpload() {
 function closeUpload() {
   hideNode(uploadOverlayNode);
   modalClose();
+  uploadInput.value = ``;
   uploadCloseButton.removeEventListener(`click`, closeUpload);
   document.removeEventListener(`keydown`, onUploadEscPress);
 
@@ -218,21 +249,14 @@ function closeUpload() {
 }
 
 function onUploadEscPress(evt) {
-  // в if добавить проверку, что мы не в полях input находимся
-  if (evt.key === `Escape`) {
+  if (evt.key === `Escape` && evt.target !== commentInput) {
     closeUpload();
   }
 }
 
 uploadInput.addEventListener(`change`, openUpload);
 // временно для удобства
-openUpload();
-
-const scaleNode = uploadOverlayNode.querySelector(`.scale`);
-const scaleInput = scaleNode.querySelector(`.scale__control--value`);
-const scalePlusButton = scaleNode.querySelector(`.scale__control--bigger`);
-const scaleMinusButton = scaleNode.querySelector(`.scale__control--smaller`);
-const imgUploadPreviewNode = uploadOverlayNode.querySelector(`.img-upload__preview img`);
+// openUpload();
 
 function biggerScale() {
   let scaleValue = parseInt(scaleInput.value, 10);
@@ -256,12 +280,6 @@ scaleMinusButton.addEventListener(`click`, lessScale);
 scalePlusButton.addEventListener(`click`, biggerScale);
 
 // наложение эффектов
-const effectsListNode = uploadOverlayNode.querySelector(`.effects__list`);
-const effectLevelNode = uploadOverlayNode.querySelector(`.effect-level`);
-const effectLevelValue = effectLevelNode.querySelector(`.effect-level__value`);
-const effectLevelPin = effectLevelNode.querySelector(`.effect-level__pin`);
-let activeEffect;
-
 function setEffect(evt) {
   if (evt.target && evt.target.matches(`input[type="radio"]`)) {
     imgUploadPreviewNode.setAttribute(`class`, ``);
@@ -274,7 +292,7 @@ function setEffect(evt) {
     }
     imgUploadPreviewNode.classList.add(`effects__preview--` + evt.target.value);
     imgUploadPreviewNode.style.filter =
-      Effect[evt.target.value].STYLE_NAME + `(` + Effect[evt.target.value].MIN + Effect[evt.target.value].UNIT + `)`;
+      Effect[evt.target.value].STYLE_NAME + `(` + Effect[evt.target.value].MAX + Effect[evt.target.value].UNIT + `)`;
 
     showNode(effectLevelNode);
   }
@@ -285,6 +303,31 @@ function setEffectValue() {
     activeEffect.STYLE_NAME + `(` + activeEffect.MAX * effectLevelValue.value / 100 + activeEffect.UNIT + `)`;
 }
 
-// хэштеги тут еще можно посмотреть https://issue.life/questions/42065872
-/* /(^|\B)#(?![0-9_]+\b)([a-zA-Z0-9_]{1,30})(\b|\r)/g */
+// проверка формы на валидность (хэштеги)
+
+function itemsRepeat(item, array) {
+  return array.some(() => {
+    return array.indexOf(item) !== -1;
+  });
+}
+
+function hashtagValidity() {
+  const hashtags = hashtagInput.value.toLowerCase().trim().split(` `);
+  if (hashtags.length > MAX_HASHTAGS) {
+    return hashtagInput.setCustomValidity(ValidationMessage.maxItems);
+  }
+  for (let i = 0; i < hashtags.length; i++) {
+    const hashtag = hashtags[i];
+    if (itemsRepeat(hashtag, hashtags.slice(i + 1))) {
+      return hashtagInput.setCustomValidity(ValidationMessage.repeatItems);
+    } else if (!REG.test(hashtag)) {
+      return hashtagInput.setCustomValidity(ValidationMessage.forbiddeSymbols);
+    } else if (hashtag.length > MAX_HASHTAG_LENGTH) {
+      return hashtagInput.setCustomValidity(ValidationMessage.maxLength);
+    }
+  }
+  return hashtagInput.setCustomValidity(``);
+}
+
+hashtagInput.addEventListener(`input`, hashtagValidity);
 
