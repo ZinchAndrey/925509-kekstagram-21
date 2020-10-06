@@ -331,3 +331,5 @@ function hashtagValidity() {
 
 hashtagInput.addEventListener(`input`, hashtagValidity);
 
+// в дальнейшем надо добавить обработчик submit и возвращать все поля в начальное положение
+
