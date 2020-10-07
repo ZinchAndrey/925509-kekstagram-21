@@ -123,7 +123,7 @@ let activeEffect;
 
 const hashtagInput = uploadOverlayNode.querySelector(`.text__hashtags`);
 const commentInput = uploadOverlayNode.querySelector(`.text__description`);
-// const uploadFormNode = uploadNode.querySelector(`.upload-select-image`);
+const uploadFormNode = uploadNode.querySelector(`.upload-select-image`);
 
 const fragment = document.createDocumentFragment();
 
@@ -305,31 +305,32 @@ function setEffectValue() {
 
 // проверка формы на валидность (хэштеги)
 
-function itemsRepeat(item, array) {
-  return array.some(() => {
-    return array.indexOf(item) !== -1;
-  });
+function isRepeat(item, index, array) {
+  return array.indexOf(item, index + 1) >= 0;
 }
 
 function hashtagValidity() {
   const hashtags = hashtagInput.value.toLowerCase().trim().split(` `);
-  if (hashtags.length > MAX_HASHTAGS) {
-    return hashtagInput.setCustomValidity(ValidationMessage.maxItems);
-  }
+
   for (let i = 0; i < hashtags.length; i++) {
     const hashtag = hashtags[i];
-    if (itemsRepeat(hashtag, hashtags.slice(i + 1))) {
-      return hashtagInput.setCustomValidity(ValidationMessage.repeatItems);
+    if (hashtags.some(isRepeat)) {
+      hashtagInput.setCustomValidity(ValidationMessage.repeatItems);
     } else if (!REG.test(hashtag)) {
-      return hashtagInput.setCustomValidity(ValidationMessage.forbiddeSymbols);
+      hashtagInput.setCustomValidity(ValidationMessage.forbiddeSymbols);
     } else if (hashtag.length > MAX_HASHTAG_LENGTH) {
-      return hashtagInput.setCustomValidity(ValidationMessage.maxLength);
+      hashtagInput.setCustomValidity(ValidationMessage.maxLength);
+    } else if (hashtags.length > MAX_HASHTAGS) {
+      hashtagInput.setCustomValidity(ValidationMessage.maxItems);
+    } else {
+      hashtagInput.setCustomValidity(``);
     }
   }
-  return hashtagInput.setCustomValidity(``);
+  uploadFormNode.reportValidity();
 }
 
 hashtagInput.addEventListener(`input`, hashtagValidity);
+
 
 // в дальнейшем надо добавить обработчик submit и возвращать все поля в начальное положение
 
