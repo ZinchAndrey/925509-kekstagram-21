@@ -1,336 +1,339 @@
 'use strict';
 
-const PICTURES_QUANTITY = 25;
-const SCALE_STEP = 25;
-const SCALE_MIN = 25;
-const SCALE_MAX = 100;
+// const PICTURES_QUANTITY = 25;
+// const SCALE_STEP = 25;
+// const SCALE_MIN = 25;
+// const SCALE_MAX = 100;
 
-const MAX_HASHTAGS = 5;
-const MAX_HASHTAG_LENGTH = 20;
-const REG = /#[a-zA-Zа-яА-ЯёЁ0-9]{1,19}/i;
+// const MAX_HASHTAGS = 5;
+// const MAX_HASHTAG_LENGTH = 20;
+// const REG = /#[a-zA-Zа-яА-ЯёЁ0-9]{1,19}/i;
 // pattern="/(^|\B)#(?![0-9_]+\b)([a-zA-Z0-9_]{1,20})(\b|\r)/g"
 // хэштеги тут еще можно посмотреть https://issue.life/questions/42065872
 
-const MESSAGES = [
-  `Всё отлично!`,
-  `В целом всё неплохо. Но не всё.`,
-  `Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.`,
-  `Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.`,
-  `Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.`,
-  `Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!`,
-];
+// const MESSAGES = [
+//   `Всё отлично!`,
+//   `В целом всё неплохо. Но не всё.`,
+//   `Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.`,
+//   `Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.`,
+//   `Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.`,
+//   `Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!`,
+// ];
 
-const NAMES = [
-  `Федот`,
-  `Евгений Понасенков`,
-  `Анзорик`,
-  `Микки`,
-  `Курт`,
-  `Феликс`,
-  `Анатолий`,
-  `Елена Михайловна`,
-  `Юрий Дудь`,
-];
+// const NAMES = [
+//   `Федот`,
+//   `Евгений Понасенков`,
+//   `Анзорик`,
+//   `Микки`,
+//   `Курт`,
+//   `Феликс`,
+//   `Анатолий`,
+//   `Елена Михайловна`,
+//   `Юрий Дудь`,
+// ];
 
 // в задании не даны описания, поэтому написал самостоятельно
-const DESCRIPTIONS = [
-  `Чилим с пацанами`,
-  `Почти как в Париже`,
-  `Я на горе`,
-  `Фото сделано на iPhone`,
-];
+// const DESCRIPTIONS = [
+//   `Чилим с пацанами`,
+//   `Почти как в Париже`,
+//   `Я на горе`,
+//   `Фото сделано на iPhone`,
+// ];
 
-const Likes = {
-  min: 15,
-  max: 200
-};
+// const Likes = {
+//   min: 15,
+//   max: 200
+// };
 
-const AvatarsNumber = {
-  min: 1,
-  max: 6
-};
+// const AvatarsNumber = {
+//   min: 1,
+//   max: 6
+// };
 
-const Effect = {
-  none: {
-    STYLE_NAME: `none`,
-    MIN: ``,
-    MAX: ``,
-    UNIT: ``
-  },
-  chrome: {
-    STYLE_NAME: `grayscale`,
-    MIN: 0,
-    MAX: 1,
-    UNIT: ``
-  },
-  sepia: {
-    STYLE_NAME: `sepia`,
-    MIN: 0,
-    MAX: 1,
-    UNIT: ``
-  },
-  marvin: {
-    STYLE_NAME: `invert`,
-    MIN: 0,
-    MAX: 100,
-    UNIT: `%`
-  },
-  phobos: {
-    STYLE_NAME: `blur`,
-    MIN: 0,
-    MAX: 3,
-    UNIT: `px`
-  },
-  heat: {
-    STYLE_NAME: `brightness`,
-    MIN: 1,
-    MAX: 3,
-    UNIT: ``
-  },
-};
+// const Effect = {
+//   none: {
+//     STYLE_NAME: `none`,
+//     MIN: ``,
+//     MAX: ``,
+//     UNIT: ``
+//   },
+//   chrome: {
+//     STYLE_NAME: `grayscale`,
+//     MIN: 0,
+//     MAX: 1,
+//     UNIT: ``
+//   },
+//   sepia: {
+//     STYLE_NAME: `sepia`,
+//     MIN: 0,
+//     MAX: 1,
+//     UNIT: ``
+//   },
+//   marvin: {
+//     STYLE_NAME: `invert`,
+//     MIN: 0,
+//     MAX: 100,
+//     UNIT: `%`
+//   },
+//   phobos: {
+//     STYLE_NAME: `blur`,
+//     MIN: 0,
+//     MAX: 3,
+//     UNIT: `px`
+//   },
+//   heat: {
+//     STYLE_NAME: `brightness`,
+//     MIN: 1,
+//     MAX: 3,
+//     UNIT: ``
+//   },
+// };
 
-const ValidationMessage = {
-  maxItems: `не более 5 хэштегов`,
-  repeatItems: `хэштеги не должны повторяться`,
-  forbiddeSymbols: `введены недопустимые символы`,
-  maxLength: `длина хэштега должна быть не более 20 символов`,
-};
+// const ValidationMessage = {
+//   maxItems: `не более 5 хэштегов`,
+//   repeatItems: `хэштеги не должны повторяться`,
+//   forbiddeSymbols: `введены недопустимые символы`,
+//   maxLength: `длина хэштега должна быть не более 20 символов`,
+// };
 
-const pictures = [];
-const bodyNode = document.querySelector(`body`);
-const picturesNode = document.querySelector(`.pictures`);
-const pictureTemplate = document.querySelector(`#picture`)
-  .content
-  .querySelector(`.picture`);
-const bigPictureNode = document.querySelector(`.big-picture`);
+// const pictures = [];
+// const bodyNode = document.querySelector(`body`);
+// const picturesNode = document.querySelector(`.pictures`);
+// const pictureTemplate = document.querySelector(`#picture`)
+//   .content
+//   .querySelector(`.picture`);
+// const bigPictureNode = document.querySelector(`.big-picture`);
 
-const uploadInput = picturesNode.querySelector(`#upload-file`);
-const uploadNode = picturesNode.querySelector(`.img-upload`);
-const uploadOverlayNode = uploadNode.querySelector(`.img-upload__overlay`);
-const uploadCloseButton = uploadOverlayNode.querySelector(`#upload-cancel`);
+// const uploadInput = window.picture.picturesNode.querySelector(`#upload-file`);
+// const uploadNode = window.picture.picturesNode.querySelector(`.img-upload`);
+// const uploadOverlayNode = uploadNode.querySelector(`.img-upload__overlay`);
+// const uploadCloseButton = uploadOverlayNode.querySelector(`#upload-cancel`);
 
-const scaleNode = uploadOverlayNode.querySelector(`.scale`);
-const scaleInput = scaleNode.querySelector(`.scale__control--value`);
-const scalePlusButton = scaleNode.querySelector(`.scale__control--bigger`);
-const scaleMinusButton = scaleNode.querySelector(`.scale__control--smaller`);
-const imgUploadPreviewNode = uploadOverlayNode.querySelector(`.img-upload__preview img`);
+// const scaleNode = uploadOverlayNode.querySelector(`.scale`);
+// const scaleInput = scaleNode.querySelector(`.scale__control--value`);
+// const scalePlusButton = scaleNode.querySelector(`.scale__control--bigger`);
+// const scaleMinusButton = scaleNode.querySelector(`.scale__control--smaller`);
+// const imgUploadPreviewNode = uploadOverlayNode.querySelector(`.img-upload__preview img`);
 
-const effectsListNode = uploadOverlayNode.querySelector(`.effects__list`);
-const effectLevelNode = uploadOverlayNode.querySelector(`.effect-level`);
-const effectLevelValue = effectLevelNode.querySelector(`.effect-level__value`);
-const effectLevelPin = effectLevelNode.querySelector(`.effect-level__pin`);
-let activeEffect;
+// const effectsListNode = uploadOverlayNode.querySelector(`.effects__list`);
+// const effectLevelNode = uploadOverlayNode.querySelector(`.effect-level`);
+// const effectLevelValue = effectLevelNode.querySelector(`.effect-level__value`);
+// const effectLevelPin = effectLevelNode.querySelector(`.effect-level__pin`);
+// let activeEffect;
 
-const hashtagInput = uploadOverlayNode.querySelector(`.text__hashtags`);
-const commentInput = uploadOverlayNode.querySelector(`.text__description`);
-const uploadFormNode = uploadNode.querySelector(`.upload-select-image`);
+// const hashtagInput = uploadOverlayNode.querySelector(`.text__hashtags`);
+// const commentInput = uploadOverlayNode.querySelector(`.text__description`);
+// const uploadFormNode = uploadNode.querySelector(`.upload-select-image`);
 
-const fragment = document.createDocumentFragment();
+// const fragment = document.createDocumentFragment();
 
 // случайное число в пределах (min; max)
-function getRandom(min, max) {
-  return Math.floor(min + Math.random() * (max - min));
-}
+// function getRandom(min, max) {
+//   return Math.floor(min + Math.random() * (max - min));
+// }
 
-function getRandomArrayItem(array) {
-  return array[getRandom(0, array.length)];
-}
+// function getRandomArrayItem(array) {
+//   return array[getRandom(0, array.length)];
+// }
 
-function hideNode(node) {
-  node.classList.add(`hidden`);
-}
+// function hideNode(node) {
+//   node.classList.add(`hidden`);
+// }
 
-function showNode(node) {
-  node.classList.remove(`hidden`);
-}
+// function showNode(node) {
+//   node.classList.remove(`hidden`);
+// }
 
-function modalOpen() {
-  bodyNode.classList.add(`modal-open`);
-}
+// function modalOpen() {
+//   bodyNode.classList.add(`modal-open`);
+// }
 
-function modalClose() {
-  bodyNode.classList.remove(`modal-open`);
-}
+// function modalClose() {
+//   bodyNode.classList.remove(`modal-open`);
+// }
 
-function renderPicturesData(quantity) {
-  for (let i = 0; i < quantity; i++) {
-    pictures[i] = {
-      url: `photos/` + (i + 1) + `.jpg`,
-      description: getRandomArrayItem(DESCRIPTIONS),
-      likes: getRandom(Likes.min, Likes.max),
-      comments: [
-        {
-          avatar: `img/avatar-` + getRandom(AvatarsNumber.min, AvatarsNumber.max) + `.svg`,
-          message: getRandomArrayItem(MESSAGES),
-          name: getRandomArrayItem(NAMES)
-        }
-      ]
-    };
-  }
-}
+// рендерит данные
+// function renderPicturesData(quantity) {
+//   for (let i = 0; i < quantity; i++) {
+//     pictures[i] = {
+//       url: `photos/${(i + 1)}.jpg`,
+//       description: window.utils.getRandomArrayItem(DESCRIPTIONS),
+//       likes: window.utils.getRandom(Likes.min, Likes.max),
+//       comments: [
+//         {
+//           avatar: `img/avatar-` + window.utils.getRandom(AvatarsNumber.min, AvatarsNumber.max) + `.svg`,
+//           message: window.utils.getRandomArrayItem(MESSAGES),
+//           name: window.utils.getRandomArrayItem(NAMES)
+//         }
+//       ]
+//     };
+//   }
+// }
 
-function renderPictures(picture) {
-  const pictureElement = pictureTemplate.cloneNode(true);
+// рендерит изображения
+// function renderPictures(picture) {
+//   const pictureElement = pictureTemplate.cloneNode(true);
 
-  pictureElement.querySelector(`.picture__img`).setAttribute(`src`, picture.url);
-  pictureElement.querySelector(`.picture__likes`).textContent = picture.likes;
-  pictureElement.querySelector(`.picture__comments`).textContent = picture.comments.length;
+//   pictureElement.querySelector(`.picture__img`).setAttribute(`src`, picture.url);
+//   pictureElement.querySelector(`.picture__likes`).textContent = picture.likes;
+//   pictureElement.querySelector(`.picture__comments`).textContent = picture.comments.length;
 
-  return pictureElement;
-}
+//   return pictureElement;
+// }
 
 // доработать фугкцию с помощью fragmentElement
-function renderBigPicture(picture) {
-  const commentsListNode = bigPictureNode.querySelector(`.social__comments`);
+// рендерит большую превьюху
+// function renderBigPicture(picture) {
+//   const commentsListNode = bigPictureNode.querySelector(`.social__comments`);
 
-  bigPictureNode.querySelector(`.big-picture__img img`).setAttribute(`src`, picture.url);
-  bigPictureNode.querySelector(`.likes-count`).textContent = picture.likes;
-  bigPictureNode.querySelector(`.comments-count`).textContent = picture.comments.length;
-  bigPictureNode.querySelector(`.social__caption`).textContent = picture.description;
+//   bigPictureNode.querySelector(`.big-picture__img img`).setAttribute(`src`, picture.url);
+//   bigPictureNode.querySelector(`.likes-count`).textContent = picture.likes;
+//   bigPictureNode.querySelector(`.comments-count`).textContent = picture.comments.length;
+//   bigPictureNode.querySelector(`.social__caption`).textContent = picture.description;
 
-  // удаляем комментарии, которые изначально есть в разметке
-  commentsListNode.querySelectorAll(`.social__comment`).forEach((item) => {
-    item.remove();
-  });
+//   // удаляем комментарии, которые изначально есть в разметке
+//   commentsListNode.querySelectorAll(`.social__comment`).forEach((item) => {
+//     item.remove();
+//   });
 
-  const comment = document.createElement(`li`);
-  comment.innerHTML = `
-    <img
-      class="social__picture"
-      src="{{аватар}}"
-      alt="{{имя комментатора}}"
-      width="35" height="35">
-    <p class="social__text">{{текст комментария}}</p>`;
+//   const comment = document.createElement(`li`);
+//   comment.innerHTML = `
+//     <img
+//       class="social__picture"
+//       src="{{аватар}}"
+//       alt="{{имя комментатора}}"
+//       width="35" height="35">
+//     <p class="social__text">{{текст комментария}}</p>`;
 
-  comment.classList.add(`social__comment`);
-  comment.querySelector(`img`).setAttribute(`src`, picture.comments[0].avatar);
-  comment.querySelector(`img`).setAttribute(`alt`, picture.comments[0].name);
-  comment.querySelector(`.social__text`).textContent = picture.comments[0].message;
+//   comment.classList.add(`social__comment`);
+//   comment.querySelector(`img`).setAttribute(`src`, picture.comments[0].avatar);
+//   comment.querySelector(`img`).setAttribute(`alt`, picture.comments[0].name);
+//   comment.querySelector(`.social__text`).textContent = picture.comments[0].message;
 
-  commentsListNode.appendChild(comment);
-}
+//   commentsListNode.appendChild(comment);
+// }
 
-renderPicturesData(PICTURES_QUANTITY);
+// renderPicturesData(PICTURES_QUANTITY);
 
-pictures.forEach((item) => {
-  fragment.appendChild(renderPictures(item));
-});
+// pictures.forEach((item) => {
+//   fragment.appendChild(renderPictures(item));
+// });
 
-picturesNode.appendChild(fragment);
+// picturesNode.appendChild(fragment);
 
 // блок кода, касающийся рендеринга big picture, пока закомментировал, чтобы не мешал
 // bigPictureNode.classList.remove(`hidden`);
-renderBigPicture(pictures[0]);
+// renderBigPicture(pictures[0]);
 // modalOpen();
 
-hideNode(document.querySelector(`.social__comment-count`));
-hideNode(document.querySelector(`.comments-loader`));
+// window.utils.hideNode(document.querySelector(`.social__comment-count`));
+// window.utils.hideNode(document.querySelector(`.comments-loader`));
 
-// редактирование изображения при загрузке
-function openUpload() {
-  showNode(uploadOverlayNode);
-  modalOpen();
-  uploadCloseButton.addEventListener(`click`, closeUpload);
-  document.addEventListener(`keydown`, onUploadEscPress);
+// // редактирование изображения при загрузке
+// function openUpload() {
+//   window.utils.showNode(uploadOverlayNode);
+//   window.utils.modalOpen();
+//   uploadCloseButton.addEventListener(`click`, closeUpload);
+//   document.addEventListener(`keydown`, onUploadEscPress);
 
-  effectsListNode.addEventListener(`click`, setEffect);
-  effectLevelPin.addEventListener(`mouseup`, setEffectValue);
-}
+//   effectsListNode.addEventListener(`click`, setEffect);
+//   effectLevelPin.addEventListener(`mouseup`, setEffectValue);
+// }
 
-function closeUpload() {
-  hideNode(uploadOverlayNode);
-  modalClose();
-  uploadInput.value = ``;
-  uploadCloseButton.removeEventListener(`click`, closeUpload);
-  document.removeEventListener(`keydown`, onUploadEscPress);
+// function closeUpload() {
+//   window.utils.hideNode(uploadOverlayNode);
+//   window.utils.modalClose();
+//   uploadInput.value = ``;
+//   uploadCloseButton.removeEventListener(`click`, closeUpload);
+//   document.removeEventListener(`keydown`, onUploadEscPress);
 
-  effectsListNode.removeEventListener(`click`, setEffect);
-  effectLevelPin.removeEventListener(`mouseup`, setEffectValue);
-}
+//   effectsListNode.removeEventListener(`click`, setEffect);
+//   effectLevelPin.removeEventListener(`mouseup`, setEffectValue);
+// }
 
-function onUploadEscPress(evt) {
-  if (evt.key === `Escape` && evt.target !== commentInput) {
-    closeUpload();
-  }
-}
+// function onUploadEscPress(evt) {
+//   if (evt.key === `Escape` && evt.target !== commentInput) {
+//     closeUpload();
+//   }
+// }
 
-uploadInput.addEventListener(`change`, openUpload);
-// временно для удобства
-// openUpload();
+// uploadInput.addEventListener(`change`, openUpload);
+// // временно для удобства
+// // openUpload();
 
-function biggerScale() {
-  let scaleValue = parseInt(scaleInput.value, 10);
-  if (scaleValue < SCALE_MAX) {
-    scaleValue = scaleValue + SCALE_STEP;
-    scaleInput.value = scaleValue + `%`;
-    imgUploadPreviewNode.style.transform = `scale(` + scaleValue / 100 + `)`;
-  }
-}
+// function biggerScale() {
+//   let scaleValue = parseInt(scaleInput.value, 10);
+//   if (scaleValue < SCALE_MAX) {
+//     scaleValue = scaleValue + SCALE_STEP;
+//     scaleInput.value = scaleValue + `%`;
+//     imgUploadPreviewNode.style.transform = `scale(` + scaleValue / 100 + `)`;
+//   }
+// }
 
-function lessScale() {
-  let scaleValue = parseInt(scaleInput.value, 10);
-  if (scaleValue > SCALE_MIN) {
-    scaleValue = scaleValue - SCALE_STEP;
-    scaleInput.value = scaleValue + `%`;
-    imgUploadPreviewNode.style.transform = `scale(` + scaleValue / 100 + `)`;
-  }
-}
+// function lessScale() {
+//   let scaleValue = parseInt(scaleInput.value, 10);
+//   if (scaleValue > SCALE_MIN) {
+//     scaleValue = scaleValue - SCALE_STEP;
+//     scaleInput.value = scaleValue + `%`;
+//     imgUploadPreviewNode.style.transform = `scale(` + scaleValue / 100 + `)`;
+//   }
+// }
 
-scaleMinusButton.addEventListener(`click`, lessScale);
-scalePlusButton.addEventListener(`click`, biggerScale);
+// scaleMinusButton.addEventListener(`click`, lessScale);
+// scalePlusButton.addEventListener(`click`, biggerScale);
 
-// наложение эффектов
-function setEffect(evt) {
-  if (evt.target && evt.target.matches(`input[type="radio"]`)) {
-    imgUploadPreviewNode.setAttribute(`class`, ``);
-    activeEffect = Effect[evt.target.value];
+// // наложение эффектов
+// function setEffect(evt) {
+//   if (evt.target && evt.target.matches(`input[type="radio"]`)) {
+//     imgUploadPreviewNode.setAttribute(`class`, ``);
+//     activeEffect = Effect[evt.target.value];
 
-    if (evt.target.value === `none`) {
-      hideNode(effectLevelNode);
-      imgUploadPreviewNode.style.filter = `none`;
-      return;
-    }
-    imgUploadPreviewNode.classList.add(`effects__preview--` + evt.target.value);
-    imgUploadPreviewNode.style.filter =
-      Effect[evt.target.value].STYLE_NAME + `(` + Effect[evt.target.value].MAX + Effect[evt.target.value].UNIT + `)`;
+//     if (evt.target.value === `none`) {
+//       window.utils.hideNode(effectLevelNode);
+//       imgUploadPreviewNode.style.filter = `none`;
+//       return;
+//     }
+//     imgUploadPreviewNode.classList.add(`effects__preview--` + evt.target.value);
+//     imgUploadPreviewNode.style.filter =
+//       Effect[evt.target.value].STYLE_NAME + `(` + Effect[evt.target.value].MAX + Effect[evt.target.value].UNIT + `)`;
 
-    showNode(effectLevelNode);
-  }
-}
+//     window.utils.showNode(effectLevelNode);
+//   }
+// }
 
-function setEffectValue() {
-  imgUploadPreviewNode.style.filter =
-    activeEffect.STYLE_NAME + `(` + activeEffect.MAX * effectLevelValue.value / 100 + activeEffect.UNIT + `)`;
-}
+// function setEffectValue() {
+//   imgUploadPreviewNode.style.filter =
+//     activeEffect.STYLE_NAME + `(` + activeEffect.MAX * effectLevelValue.value / 100 + activeEffect.UNIT + `)`;
+// }
 
-// проверка формы на валидность (хэштеги)
+// // проверка формы на валидность (хэштеги)
 
-function isRepeat(item, index, array) {
-  return array.indexOf(item, index + 1) >= 0;
-}
+// function isRepeat(item, index, array) {
+//   return array.indexOf(item, index + 1) >= 0;
+// }
 
-function hashtagValidity() {
-  const hashtags = hashtagInput.value.toLowerCase().trim().split(` `);
+// function hashtagValidity() {
+//   const hashtags = hashtagInput.value.toLowerCase().trim().split(` `);
 
-  for (let i = 0; i < hashtags.length; i++) {
-    const hashtag = hashtags[i];
-    if (hashtags.some(isRepeat)) {
-      hashtagInput.setCustomValidity(ValidationMessage.repeatItems);
-    } else if (!REG.test(hashtag)) {
-      hashtagInput.setCustomValidity(ValidationMessage.forbiddeSymbols);
-    } else if (hashtag.length > MAX_HASHTAG_LENGTH) {
-      hashtagInput.setCustomValidity(ValidationMessage.maxLength);
-    } else if (hashtags.length > MAX_HASHTAGS) {
-      hashtagInput.setCustomValidity(ValidationMessage.maxItems);
-    } else {
-      hashtagInput.setCustomValidity(``);
-    }
-  }
-  uploadFormNode.reportValidity();
-}
+//   for (let i = 0; i < hashtags.length; i++) {
+//     const hashtag = hashtags[i];
+//     if (hashtags.some(isRepeat)) {
+//       hashtagInput.setCustomValidity(ValidationMessage.repeatItems);
+//     } else if (!REG.test(hashtag)) {
+//       hashtagInput.setCustomValidity(ValidationMessage.forbiddeSymbols);
+//     } else if (hashtag.length > MAX_HASHTAG_LENGTH) {
+//       hashtagInput.setCustomValidity(ValidationMessage.maxLength);
+//     } else if (hashtags.length > MAX_HASHTAGS) {
+//       hashtagInput.setCustomValidity(ValidationMessage.maxItems);
+//     } else {
+//       hashtagInput.setCustomValidity(``);
+//     }
+//   }
+//   uploadFormNode.reportValidity();
+// }
 
-hashtagInput.addEventListener(`input`, hashtagValidity);
+// hashtagInput.addEventListener(`input`, hashtagValidity);
 
 
-// в дальнейшем надо добавить обработчик submit и возвращать все поля в начальное положение
+// // в дальнейшем надо добавить обработчик submit и возвращать все поля в начальное положение
 
