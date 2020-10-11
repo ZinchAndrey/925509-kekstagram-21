@@ -19,11 +19,11 @@
     node.classList.remove(`hidden`);
   }
 
-  function modalOpen() {
+  function openModal() {
     bodyNode.classList.add(`modal-open`);
   }
 
-  function modalClose() {
+  function closeModal() {
     bodyNode.classList.remove(`modal-open`);
   }
 
@@ -32,7 +32,7 @@
     getRandomArrayItem: getRandomArrayItem,
     hideNode: hideNode,
     showNode: showNode,
-    modalOpen: modalOpen,
-    modalClose: modalClose,
+    openModal: openModal,
+    closeModal: closeModal,
   };
 })();

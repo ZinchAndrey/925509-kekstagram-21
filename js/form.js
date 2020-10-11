@@ -1,5 +1,6 @@
 'use strict';
 (function () {
+  // !!! разделить на модули с правкой изображений и валидацией полей
   const SCALE_STEP = 25;
   const SCALE_MIN = 25;
   const SCALE_MAX = 100;
@@ -78,7 +79,7 @@
   // редактирование изображения при загрузке
   function openUpload() {
     window.utils.showNode(uploadOverlayNode);
-    window.utils.modalOpen();
+    window.utils.openModal();
     uploadCloseButton.addEventListener(`click`, closeUpload);
     document.addEventListener(`keydown`, onUploadEscPress);
 
@@ -88,7 +89,7 @@
 
   function closeUpload() {
     window.utils.hideNode(uploadOverlayNode);
-    window.utils.modalClose();
+    window.utils.closeModal();
     uploadInput.value = ``;
     uploadCloseButton.removeEventListener(`click`, closeUpload);
     document.removeEventListener(`keydown`, onUploadEscPress);
