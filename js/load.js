@@ -2,6 +2,7 @@
 
 (function () {
   window.load = function (url, onSuccess, onError) {
+    const TIMEOUT = 10000;
     let xhr = new XMLHttpRequest();
 
     xhr.responseType = `json`;
@@ -40,7 +41,7 @@
       onError(`Запрос не успел выполниться за ` + xhr.timeout + `мс`);
     });
 
-    xhr.timeout = 10000; // 10s
+    xhr.timeout = TIMEOUT; // 10s
 
     xhr.open(`GET`, url);
     xhr.send();
