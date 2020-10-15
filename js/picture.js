@@ -8,7 +8,7 @@
 
   const fragment = document.createDocumentFragment();
 
-  function renderPictures(picture) {
+  function renderPicture(picture) {
     const pictureElement = pictureTemplate.cloneNode(true);
 
     pictureElement.querySelector(`.picture__img`).setAttribute(`src`, picture.url);
@@ -18,15 +18,28 @@
     return pictureElement;
   }
 
-  window.data.pictures.forEach((item) => {
-    fragment.appendChild(renderPictures(item));
-  });
-  picturesNode.appendChild(fragment);
+  function renderAllPictures(pictures) {
+    pictures.forEach((item) => {
+      fragment.appendChild(renderPicture(item));
+    });
 
-  window.utils.hideNode(document.querySelector(`.social__comment-count`));
-  window.utils.hideNode(document.querySelector(`.comments-loader`));
+    picturesNode.appendChild(fragment);
+
+    // подумать - это после загрузки данных производить?
+    window.utils.hideNode(document.querySelector(`.social__comment-count`));
+    window.utils.hideNode(document.querySelector(`.comments-loader`));
+  }
+
+  // window.data.pictures.forEach((item) => {
+  //   fragment.appendChild(renderPicture(item));
+  // });
+  // picturesNode.appendChild(fragment);
+
+  // window.utils.hideNode(document.querySelector(`.social__comment-count`));
+  // window.utils.hideNode(document.querySelector(`.comments-loader`));
 
   window.picture = {
     picturesNode: picturesNode,
+    renderAllPictures: renderAllPictures,
   };
 })();
