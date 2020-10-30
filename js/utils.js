@@ -27,6 +27,14 @@
     bodyNode.classList.remove(`modal-open`);
   }
 
+  // в стрелочную функцию переделать
+  function shuffleArray(array) {
+    return array.sort(function () {
+      return Math.random() - 0.5;
+    });
+  }
+
+
   window.utils = {
     getRandom: getRandom,
     getRandomArrayItem: getRandomArrayItem,
@@ -34,5 +42,6 @@
     showNode: showNode,
     openModal: openModal,
     closeModal: closeModal,
+    shuffleArray: shuffleArray,
   };
 })();

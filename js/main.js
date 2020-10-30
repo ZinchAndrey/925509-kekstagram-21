@@ -8,12 +8,9 @@
 
   function onSuccess(data) {
     let pictures = data;
-    window.main = {
-      pictures: data
-    } // тест
-    console.log(window.main.pictures);
+    // записываем массив с картинками в глобальный объект (можно просто в window.pictures)
+    window.pictures = data;
     window.picture.renderAllPictures(pictures);
-    // console.log(pictures);
 
     const filterNode = document.querySelector(`.img-filters`);
 
