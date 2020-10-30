@@ -41,8 +41,18 @@
     activateButton(evt);
   }
 
-  FilterButton.discussed.addEventListener(`click`, filterDiscussedPictures);
-  FilterButton.random.addEventListener(`click`, filterRandomPictures);
-  FilterButton.default.addEventListener(`click`, filterDefaultPictures);
+  function filterDiscussed(evt) {
+    window.utils.debounce(filterDiscussedPictures(evt));
+  }
+  function filterRandom(evt) {
+    window.utils.debounce(filterRandomPictures(evt));
+  }
+  function filterDefault(evt) {
+    window.utils.debounce(filterDefaultPictures(evt));
+  }
+
+  FilterButton.discussed.addEventListener(`click`, filterDiscussed);
+  FilterButton.random.addEventListener(`click`, filterRandom);
+  FilterButton.default.addEventListener(`click`, filterDefault);
 
 })();

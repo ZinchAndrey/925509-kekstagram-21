@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  const DEBOUNCE_INTERVAL = 500; // ms
   const bodyNode = document.querySelector(`body`);
 
   function getRandom(min, max) {
@@ -34,6 +35,19 @@
     });
   }
 
+  // в стрелочную функцию переделать
+  function debounce(cb) {
+    let lastTimeout = null;
+
+    return function (...parameters) {
+      if (lastTimeout) {
+        window.clearTimeout(lastTimeout);
+      }
+      lastTimeout = window.setTimeout(function () {
+        cb(...parameters);
+      }, DEBOUNCE_INTERVAL);
+    };
+  }
 
   window.utils = {
     getRandom: getRandom,
@@ -43,5 +57,13 @@
     openModal: openModal,
     closeModal: closeModal,
     shuffleArray: shuffleArray,
+    debounce: debounce,
   };
+
+  // !!!! везде можно так писать объект
+  // window.utils = {
+  //   getRandom,
+  //   getRandomArrayItem,
+  //   hideNode,
+  // };
 })();
