@@ -30,6 +30,12 @@
     window.utils.hideNode(document.querySelector(`.comments-loader`));
   }
 
+  function removeAllPictures() {
+    document.querySelectorAll(`.picture`).forEach((picture) => {
+      picturesNode.removeChild(picture);
+    });
+  }
+
   // window.data.pictures.forEach((item) => {
   //   fragment.appendChild(renderPicture(item));
   // });
@@ -41,5 +47,6 @@
   window.picture = {
     picturesNode: picturesNode,
     renderAllPictures: renderAllPictures,
+    removeAllPictures: removeAllPictures,
   };
 })();
