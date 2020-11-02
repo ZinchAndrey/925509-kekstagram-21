@@ -60,6 +60,6 @@
   renderPicturesData(PICTURES_QUANTITY);
 
   window.data = {
-    pictures: pictures,
+    pictures,
   };
 })();

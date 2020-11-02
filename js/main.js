@@ -8,8 +8,8 @@
 
   function onSuccess(data) {
     let pictures = data;
-    // записываем массив с картинками в глобальный объект (можно просто в window.pictures)
     window.pictures = data;
+    window.picturesDefaultArray = data.slice(); // копируем полученный с сервера массив с исходным порядком, его мы видоизменять не будем
     window.picture.renderAllPictures(pictures);
 
     const filterNode = document.querySelector(`.img-filters`);

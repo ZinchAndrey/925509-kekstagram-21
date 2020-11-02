@@ -45,8 +45,8 @@
   // window.utils.hideNode(document.querySelector(`.comments-loader`));
 
   window.picture = {
-    picturesNode: picturesNode,
-    renderAllPictures: renderAllPictures,
-    removeAllPictures: removeAllPictures,
+    picturesNode,
+    renderAllPictures,
+    removeAllPictures,
   };
 })();

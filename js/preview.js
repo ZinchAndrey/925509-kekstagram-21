@@ -1,6 +1,8 @@
 'use strict';
 (function () {
   const bigPictureNode = document.querySelector(`.big-picture`);
+  const commentInput = bigPictureNode.querySelector(`.social__footer-text`);
+  const previewCloseButton = bigPictureNode.querySelector(`.big-picture__cancel`);
 
   function renderBigPicture(picture) {
     const commentsListNode = bigPictureNode.querySelector(`.social__comments`);
@@ -32,6 +34,49 @@
     commentsListNode.appendChild(comment);
   }
 
-  renderBigPicture(window.data.pictures[0]);
-  // написать функционал, при котором при клике будет открываться превьюха
+
+  function onPreviewEscPress(evt) {
+    if (evt.key === `Escape` && evt.target !== commentInput) {
+      closePreview();
+    }
+  }
+
+  function searchPictureIndex(evt) {
+    const picturesNodeList = document.querySelectorAll(`.picture`);
+    const picturesNodeArr = Array.from(picturesNodeList);
+    return picturesNodeArr.indexOf(evt.target.closest(`.picture`));
+  }
+
+  function openPreview(evt) {
+    if (evt.target.closest(`.picture`)) {
+      const isDefaultOrder = document.querySelector(`#filter-default`).classList.contains(`img-filters__button--active`);
+
+      if (isDefaultOrder) {
+        renderBigPicture(window.picturesDefaultArray[searchPictureIndex(evt)]);
+      } else {
+        renderBigPicture(window.pictures[searchPictureIndex(evt)]);
+      }
+
+      bigPictureNode.classList.remove(`hidden`);
+      window.utils.openModal();
+      bigPictureNode.focus();
+
+      bigPictureNode.addEventListener(`keydown`, onPreviewEscPress);
+      previewCloseButton.addEventListener(`click`, closePreview);
+    }
+  }
+
+  function closePreview() {
+    bigPictureNode.classList.add(`hidden`);
+    window.utils.closeModal();
+
+    bigPictureNode.removeEventListener(`keydown`, onPreviewEscPress);
+    previewCloseButton.removeEventListener(`click`, closePreview);
+  }
+
+  window.picture.picturesNode.addEventListener(`click`, openPreview);
+
+  window.preview = {
+    renderBigPicture,
+  };
 })();

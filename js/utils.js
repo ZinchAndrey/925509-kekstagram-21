@@ -50,20 +50,13 @@
   }
 
   window.utils = {
-    getRandom: getRandom,
-    getRandomArrayItem: getRandomArrayItem,
-    hideNode: hideNode,
-    showNode: showNode,
-    openModal: openModal,
-    closeModal: closeModal,
-    shuffleArray: shuffleArray,
-    debounce: debounce,
+    getRandom,
+    getRandomArrayItem,
+    hideNode,
+    showNode,
+    openModal,
+    closeModal,
+    shuffleArray,
+    debounce,
   };
-
-  // !!!! везде можно так писать объект
-  // window.utils = {
-  //   getRandom,
-  //   getRandomArrayItem,
-  //   hideNode,
-  // };
 })();
