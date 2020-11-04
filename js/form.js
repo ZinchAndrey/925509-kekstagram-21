@@ -106,7 +106,7 @@
 
   uploadInput.addEventListener(`change`, openUpload);
   // временно для удобства
-  // openUpload();
+  openUpload();
 
   function biggerScale() {
     let scaleValue = parseInt(scaleInput.value, 10);
@@ -149,8 +149,13 @@
   }
 
   function setEffectValue() {
-    imgUploadPreviewNode.style.filter =
-      activeEffect.STYLE_NAME + `(` + activeEffect.MAX * effectLevelValue.value / 100 + activeEffect.UNIT + `)`;
+    // !!!при открытии окна скрыть шкалу эффекта, тогда if заодно можно убрать
+    // if нужен, чтобы не было ошибки в дефолтном состоянии (эффект оригинал)
+    if (activeEffect) {
+      imgUploadPreviewNode.style.filter =
+        activeEffect.STYLE_NAME + `(` + activeEffect.MAX * effectLevelValue.value / 100 + activeEffect.UNIT + `)`;
+    }
+
   }
 
   // проверка формы на валидность (хэштеги)
