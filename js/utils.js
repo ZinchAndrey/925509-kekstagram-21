@@ -36,7 +36,7 @@
   }
 
   // в стрелочную функцию переделать
-  function debounce(cb) {
+  function debounce(cb, interval = DEBOUNCE_INTERVAL) {
     let lastTimeout = null;
 
     return function (...parameters) {
@@ -45,7 +45,7 @@
       }
       lastTimeout = window.setTimeout(function () {
         cb(...parameters);
-      }, DEBOUNCE_INTERVAL);
+      }, interval);
     };
   }
 
