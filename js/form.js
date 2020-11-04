@@ -70,6 +70,8 @@
   const effectLevelNode = uploadOverlayNode.querySelector(`.effect-level`);
   const effectLevelValue = effectLevelNode.querySelector(`.effect-level__value`);
   const effectLevelPin = effectLevelNode.querySelector(`.effect-level__pin`);
+  const effectLevelLine = effectLevelNode.querySelector(`.effect-level__depth`);
+
   let activeEffect;
 
   const hashtagInput = uploadOverlayNode.querySelector(`.text__hashtags`);
@@ -84,7 +86,6 @@
     document.addEventListener(`keydown`, onUploadEscPress);
 
     effectsListNode.addEventListener(`click`, setEffect);
-    effectLevelPin.addEventListener(`mouseup`, setEffectValue);
   }
 
   function closeUpload() {
@@ -95,7 +96,6 @@
     document.removeEventListener(`keydown`, onUploadEscPress);
 
     effectsListNode.removeEventListener(`click`, setEffect);
-    effectLevelPin.removeEventListener(`mouseup`, setEffectValue);
   }
 
   function onUploadEscPress(evt) {
@@ -130,10 +130,17 @@
   scalePlusButton.addEventListener(`click`, biggerScale);
 
   // наложение эффектов
+  function setPinStart() {
+    effectLevelPin.style.left = `100%`;
+    effectLevelLine.style.width = `100%`;
+    effectLevelValue.value = 100;
+  }
+
   function setEffect(evt) {
     if (evt.target && evt.target.matches(`input[type="radio"]`)) {
       imgUploadPreviewNode.setAttribute(`class`, ``);
       activeEffect = Effect[evt.target.value];
+      setPinStart();
 
       if (evt.target.value === `none`) {
         window.utils.hideNode(effectLevelNode);
@@ -151,11 +158,8 @@
   function setEffectValue() {
     // !!!при открытии окна скрыть шкалу эффекта, тогда if заодно можно убрать
     // if нужен, чтобы не было ошибки в дефолтном состоянии (эффект оригинал)
-    if (activeEffect) {
-      imgUploadPreviewNode.style.filter =
-        activeEffect.STYLE_NAME + `(` + activeEffect.MAX * effectLevelValue.value / 100 + activeEffect.UNIT + `)`;
-    }
-
+    imgUploadPreviewNode.style.filter =
+      activeEffect.STYLE_NAME + `(` + activeEffect.MAX * effectLevelValue.value / 100 + activeEffect.UNIT + `)`;
   }
 
   // проверка формы на валидность (хэштеги)
@@ -184,7 +188,12 @@
     uploadFormNode.reportValidity();
   }
 
+  window.utils.hideNode(effectLevelNode);
   hashtagInput.addEventListener(`input`, hashtagValidity);
   // в дальнейшем надо добавить обработчик submit и возвращать все поля в начальное положение
 
+  // эта функция нужна в move.js
+  window.form = {
+    setEffectValue,
+  };
 })();

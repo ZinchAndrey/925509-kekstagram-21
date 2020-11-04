@@ -1,9 +1,12 @@
 'use strict';
 // !!! обернуть в IIFE
 
-const effectLevelPin = document.querySelector(`.effect-level__pin`);
-const effectLevelLine = document.querySelector(`.effect-level__depth`);
-const maxEffectLevel = document.querySelector(`.effect-level__line`).offsetWidth;
+// эти ноды есть в form.js , теоретически их можно вывести в глобальный объект и тут использовать
+const effectLevelNode = document.querySelector(`.effect-level`);
+const effectLevelPin = effectLevelNode.querySelector(`.effect-level__pin`);
+const effectLevelLine = effectLevelNode.querySelector(`.effect-level__depth`);
+const effectLevelValue = effectLevelNode.querySelector(`.effect-level__value`);
+const maxEffectLevel = effectLevelNode.querySelector(`.effect-level__line`);
 
 function movePin(evt) {
   let startX = evt.clientX;
@@ -11,7 +14,7 @@ function movePin(evt) {
   function onMouseMove(moveEvt) {
     let deltaX = moveEvt.clientX - startX;
     let pinLeftCoord = parseInt(getComputedStyle(effectLevelPin).left, 10);
-    let pinRelativeCoord = (pinLeftCoord + deltaX) / maxEffectLevel * 100;
+    let pinRelativeCoord = (pinLeftCoord + deltaX) / maxEffectLevel.offsetWidth * 100;
 
     if (pinRelativeCoord > 100) {
       pinRelativeCoord = 100;
@@ -21,6 +24,9 @@ function movePin(evt) {
 
     effectLevelPin.style.left = `${pinRelativeCoord}%`;
     effectLevelLine.style.width = `${pinRelativeCoord}%`;
+    effectLevelValue.value = pinRelativeCoord;
+    // через eventListener 'change' не работает почему-то, поэтому тут непосредственно вызываем функцию по пересчету
+    window.form.setEffectValue();
     startX = moveEvt.clientX;
   }
 
