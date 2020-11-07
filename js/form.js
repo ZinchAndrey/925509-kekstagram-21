@@ -67,6 +67,7 @@
   const imgUploadPreviewNode = uploadOverlayNode.querySelector(`.img-upload__preview img`);
 
   const effectsListNode = uploadOverlayNode.querySelector(`.effects__list`);
+  const effectDefaultNode = effectsListNode.querySelector(`.effects__preview--none`);
   const effectLevelNode = uploadOverlayNode.querySelector(`.effect-level`);
   const effectLevelValue = effectLevelNode.querySelector(`.effect-level__value`);
   const effectLevelPin = effectLevelNode.querySelector(`.effect-level__pin`);
@@ -92,10 +93,12 @@
     window.utils.hideNode(uploadOverlayNode);
     window.utils.closeModal();
     uploadInput.value = ``;
+    effectDefaultNode.click();
     uploadCloseButton.removeEventListener(`click`, closeUpload);
     document.removeEventListener(`keydown`, onUploadEscPress);
 
     effectsListNode.removeEventListener(`click`, setEffect);
+    uploadFormNode.reset();
   }
 
   function onUploadEscPress(evt) {
