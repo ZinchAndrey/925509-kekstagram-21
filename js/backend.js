@@ -1,7 +1,12 @@
 'use strict';
 
 (function () {
-  window.load = function (url, onSuccess, onError) {
+  const Url = {
+    LOAD: `https://21.javascript.pages.academy/kekstagram/data`,
+    UPLOAD: `https://21.javascript.pages.academy/kekstagram`,
+  };
+
+  function createXhr(onSuccess, onError) {
     const TIMEOUT = 10000;
     let xhr = new XMLHttpRequest();
 
@@ -43,7 +48,25 @@
 
     xhr.timeout = TIMEOUT; // 10s
 
-    xhr.open(`GET`, url);
-    xhr.send();
+    return xhr;
+  }
+
+  function loadData(onSuccess, onError) {
+    const loadXhr = createXhr(onSuccess, onError);
+
+    loadXhr.open(`GET`, Url.LOAD);
+    loadXhr.send();
+  }
+
+  function uploadData(data, onSuccess, onError) {
+    const loadXhr = createXhr(onSuccess, onError);
+
+    loadXhr.open(`POST`, Url.UPLOAD);
+    loadXhr.send(data);
+  }
+
+  window.backend = {
+    loadData,
+    uploadData
   };
 })();

@@ -10,6 +10,7 @@
   const maxEffectLevel = effectLevelNode.querySelector(`.effect-level__line`);
 
   function movePin(evt) {
+    evt.preventDefault();
     let startX = evt.clientX;
 
     function onMouseMove(moveEvt) {

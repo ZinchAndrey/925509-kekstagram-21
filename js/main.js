@@ -1,8 +1,9 @@
 'use strict';
 
 (function () {
-  const URL = `https://21.javascript.pages.academy/kekstagram/data`;
+  // можно вынести в модуль messages.loadError и messages.loadSuccess
   function onError(message) {
+    window.messages.errorLoad(message);
     throw new Error(message);
   }
 
@@ -16,5 +17,5 @@
 
     filterNode.classList.remove(`img-filters--inactive`);
   }
-  window.load(URL, onSuccess, onError);
+  window.backend.loadData(onSuccess, onError);
 })();
