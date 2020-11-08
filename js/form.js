@@ -109,7 +109,7 @@
 
   uploadInput.addEventListener(`change`, openUpload);
   // временно для удобства
-  openUpload();
+  // openUpload();
 
   function biggerScale() {
     let scaleValue = parseInt(scaleInput.value, 10);
@@ -192,7 +192,6 @@
   window.utils.hideNode(effectLevelNode);
   hashtagInput.addEventListener(`input`, hashtagValidity);
 
-  // в дальнейшем надо добавить обработчик submit и возвращать все поля в начальное положение
   uploadFormNode.addEventListener(`submit`, function (evt) {
     evt.preventDefault();
     const formData = new FormData(uploadFormNode);
