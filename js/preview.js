@@ -6,10 +6,19 @@
 
   function renderBigPicture(picture) {
     const commentsListNode = bigPictureNode.querySelector(`.social__comments`);
+    // const commentsCountNode = commentsListNode.querySelector(`.social__comment-count`);
+    const loadButton = bigPictureNode.querySelector(`.social__comments-loader`);
+
+    const COMMENTS_MAX_COUNT = picture.comments.length;
+    const COMMENTS_COUNT_STEP = 5;
+
+    // ткущее количество комментариев
+    let commentsCount;
+    let iterationNumber = 1;
 
     bigPictureNode.querySelector(`.big-picture__img img`).setAttribute(`src`, picture.url);
     bigPictureNode.querySelector(`.likes-count`).textContent = picture.likes;
-    bigPictureNode.querySelector(`.comments-count`).textContent = picture.comments.length;
+    // bigPictureNode.querySelector(`.comments-count`).textContent = picture.comments.length;
     bigPictureNode.querySelector(`.social__caption`).textContent = picture.description;
 
     // удаляем комментарии, которые изначально есть в разметке
@@ -17,21 +26,47 @@
       item.remove();
     });
 
-    const comment = document.createElement(`li`);
-    comment.innerHTML = `
-      <img
-        class="social__picture"
-        src="{{аватар}}"
-        alt="{{имя комментатора}}"
-        width="35" height="35">
-      <p class="social__text">{{текст комментария}}</p>`;
+    function renderComments() {
+      // const commentsCountNode = commentsListNode.querySelector(`.social__comment-count`);
 
-    comment.classList.add(`social__comment`);
-    comment.querySelector(`img`).setAttribute(`src`, picture.comments[0].avatar);
-    comment.querySelector(`img`).setAttribute(`alt`, picture.comments[0].name);
-    comment.querySelector(`.social__text`).textContent = picture.comments[0].message;
+      if (COMMENTS_MAX_COUNT > COMMENTS_COUNT_STEP * iterationNumber) {
+        commentsCount = COMMENTS_COUNT_STEP * iterationNumber;
+        window.utils.showNode(loadButton);
+      } else {
+        commentsCount = COMMENTS_MAX_COUNT;
+        window.utils.hideNode(loadButton);
+      }
 
-    commentsListNode.appendChild(comment);
+      bigPictureNode.querySelector(`.social__comment-count`).textContent = `${commentsCount} из ${COMMENTS_MAX_COUNT} комментариев`;
+
+      for (let i = COMMENTS_COUNT_STEP * (iterationNumber - 1); i < commentsCount; i++) {
+        const comment = document.createElement(`li`);
+        comment.innerHTML = `
+          <img
+            class="social__picture"
+            src="{{аватар}}"
+            alt="{{имя комментатора}}"
+            width="35" height="35">
+          <p class="social__text">{{текст комментария}}</p>`;
+
+        comment.classList.add(`social__comment`);
+        comment.querySelector(`img`).setAttribute(`src`, picture.comments[i].avatar);
+        comment.querySelector(`img`).setAttribute(`alt`, picture.comments[i].name);
+        comment.querySelector(`.social__text`).textContent = picture.comments[i].message;
+
+        commentsListNode.appendChild(comment);
+      }
+    }
+
+    function loadMoreComments() {
+      // debugger;
+      iterationNumber += 1;
+      renderComments();
+    }
+
+    renderComments();
+
+    loadButton.addEventListener(`click`, loadMoreComments);
   }
 
 
