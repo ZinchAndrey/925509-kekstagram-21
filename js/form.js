@@ -67,6 +67,7 @@
   const imgUploadPreviewNode = uploadOverlayNode.querySelector(`.img-upload__preview img`);
 
   const effectsListNode = uploadOverlayNode.querySelector(`.effects__list`);
+  const effectDefaultNode = effectsListNode.querySelector(`.effects__preview--none`);
   const effectLevelNode = uploadOverlayNode.querySelector(`.effect-level`);
   const effectLevelValue = effectLevelNode.querySelector(`.effect-level__value`);
   const effectLevelPin = effectLevelNode.querySelector(`.effect-level__pin`);
@@ -76,7 +77,7 @@
 
   const hashtagInput = uploadOverlayNode.querySelector(`.text__hashtags`);
   const commentInput = uploadOverlayNode.querySelector(`.text__description`);
-  const uploadFormNode = uploadNode.querySelector(`.upload-select-image`);
+  const uploadFormNode = uploadNode.querySelector(`#upload-select-image`);
 
   // редактирование изображения при загрузке
   function openUpload() {
@@ -92,10 +93,12 @@
     window.utils.hideNode(uploadOverlayNode);
     window.utils.closeModal();
     uploadInput.value = ``;
+    effectDefaultNode.click();
     uploadCloseButton.removeEventListener(`click`, closeUpload);
     document.removeEventListener(`keydown`, onUploadEscPress);
 
     effectsListNode.removeEventListener(`click`, setEffect);
+    uploadFormNode.reset();
   }
 
   function onUploadEscPress(evt) {
@@ -106,7 +109,7 @@
 
   uploadInput.addEventListener(`change`, openUpload);
   // временно для удобства
-  openUpload();
+  // openUpload();
 
   function biggerScale() {
     let scaleValue = parseInt(scaleInput.value, 10);
@@ -156,8 +159,6 @@
   }
 
   function setEffectValue() {
-    // !!!при открытии окна скрыть шкалу эффекта, тогда if заодно можно убрать
-    // if нужен, чтобы не было ошибки в дефолтном состоянии (эффект оригинал)
     imgUploadPreviewNode.style.filter =
       activeEffect.STYLE_NAME + `(` + activeEffect.MAX * effectLevelValue.value / 100 + activeEffect.UNIT + `)`;
   }
@@ -190,10 +191,17 @@
 
   window.utils.hideNode(effectLevelNode);
   hashtagInput.addEventListener(`input`, hashtagValidity);
-  // в дальнейшем надо добавить обработчик submit и возвращать все поля в начальное положение
+
+  uploadFormNode.addEventListener(`submit`, function (evt) {
+    evt.preventDefault();
+    const formData = new FormData(uploadFormNode);
+
+    window.backend.uploadData(formData, window.messages.successUpload, window.messages.errorUpload);
+  });
 
   // эта функция нужна в move.js
   window.form = {
     setEffectValue,
+    closeUpload,
   };
 })();

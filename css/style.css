@@ -1341,6 +1341,24 @@ main {
 
 
 /**
+ * Сообщение с ошибкой загрузки превьюшек
+ */
+.error-previews-load {
+  font-size: 22px;
+  text-align: center;
+  width: 100%;
+  font-family: inherit;
+  font-weight: 700;
+  color: #ff4e4e;
+  border-bottom: 3px solid #ff4e4e;
+  padding: 20px;
+}
+
+.error-previews-load__message {
+  margin: 0;
+}
+
+/**
  * Экран загрузки изображения
  */
 
