@@ -26,8 +26,8 @@
     picturesNode.appendChild(fragment);
 
     // подумать - это после загрузки данных производить?
-    window.utils.hideNode(document.querySelector(`.social__comment-count`));
-    window.utils.hideNode(document.querySelector(`.comments-loader`));
+    // window.utils.hideNode(document.querySelector(`.social__comment-count`));
+    // window.utils.hideNode(document.querySelector(`.comments-loader`));
   }
 
   function removeAllPictures() {
